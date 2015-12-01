@@ -21,6 +21,12 @@
 // Import declarations
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import javax.swing.*;
 
 public class Group_Project_Prototype_2_Client implements ItemListener
@@ -510,6 +516,85 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             this.add(btnSubmit);
             
         }
+    } // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Client Network Class">
+    class ClientNetworkProgram
+    {
+        private String state;
+        private String host;
+        private int port;
+        private String command;
+        //private Socket cSocket;
+        
+        public ClientNetworkProgram(String hostName, int portNumber)
+        {
+            this.state = "WAITING"; // Set initial client state to waiting
+            this.host = hostName; // Set the target server's host name
+            this.port = portNumber; // Set our client's port number
+            this.command = null; // Set internal command to null
+            //this.cSocket = null; // Set our socket object attribute to null
+        }
+        
+        public void connect()
+        {
+//            try
+//            (
+//                Socket cSocket = new Socket(this.host, this.port);
+//                PrintWriter out = new PrintWriter(cSocket.getOutputStream(), true);
+//                BufferedReader in = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
+//            )
+            try
+            (
+                Socket cSocket = new Socket(this.host, this.port);
+                PrintWriter out = new PrintWriter(cSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));                
+            )
+            {
+                String fromServer;
+
+                // While still receiving/processing network communications, loop runs
+                while ((fromServer = in.readLine()) != null)
+                {
+                    System.out.println("Server: " + fromServer);
+
+                    // If client receives END message, perform cleanup
+                    if (fromServer.equalsIgnoreCase("END"))
+                    {
+                        System.out.println("TCP/IP Session is ending.");
+                        break;
+                    }
+                    
+                    if (command != null)
+                    {
+                        System.out.println("Client: " + command);
+                        out.println(command); // Send client data to server
+                    }
+                }
+            }
+            catch (UnknownHostException e)
+            {
+                System.err.println("Don't know about host " + this.host);
+                System.exit(1);
+            }
+            catch (IOException e)
+            {
+                System.err.println("Couldn't get I/O for the connection to " + this.host);
+                System.exit(1);
+            }
+        }
+        
+        public void sendMessage(String msg)
+        {
+            this.command = msg;
+        }
+        
+//        public String sendMessage(String msg)
+//        {
+//            String response = ""; // Will hold the response from the server
+//            return response; // Return the server's response
+//        }
+        
     } // </editor-fold>
 }
 

@@ -80,9 +80,11 @@ class Group_Project_Prototype_Server_Thread extends Thread
             {
                 outputLine = jjp.processInput(inputLine);
                 out.println(outputLine);
-                if (outputLine.equals("Bye"))
+                
+                if (outputLine.equalsIgnoreCase("END"))
                     break;
             }
+            
             socket.close();
         }
         catch (IOException e)
@@ -108,10 +110,11 @@ class JavaJackProtocol
 
     public String processInput(String input)
     {
-        String output = "";
+        String output = null;
         
-        if (input.startsWith("SQL"))
+        if (input.startsWith("SQL:"))
         {
+            
             state = RCV_SQL; // Switch to received sql information state
         }
         else if (input.startsWith("RCV_ACK"))
@@ -125,4 +128,21 @@ class JavaJackProtocol
         
         return output;
     }
+    
+    public static String sendQuery(String query)
+    {
+        String result = ""; // Will hold our query result
+
+        try
+        {
+            
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        return result; // Return our query result
+    }
 }
+
