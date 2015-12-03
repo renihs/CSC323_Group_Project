@@ -204,6 +204,13 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             {
                 switchToPanel(EMPLOYEEPANEL_1); // Switch back to first employee panel
             }
+            else if (commandText.equalsIgnoreCase("submitSale")) // Check for submit tire/rim sale button
+            {
+                // Get sale JPanel, then grab and validate user-entered values
+                // Perform computations and, if appropriate, send an update
+                // to the server to add the commission to the logged in employee
+                JPanel salePanel = null;
+            }
         }
     }
     
@@ -482,6 +489,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             txtRimUnitPrice = new JTextField();
 
             btnSubmit =  new JButton("Submit");
+            btnSubmit.setActionCommand("submitSale");
             btnBack = new JButton("Back To Clock");
             btnBack.setActionCommand("backToClock");
 
