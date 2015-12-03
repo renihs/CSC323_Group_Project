@@ -6,16 +6,16 @@
  *         Quentin Wephre
  *         Axel Tovar
  *         Kyle Schmidt
- *          
+ *
  * Created at 11:27:45 AM on Oct 28, 2015 using UTF-8 encoding
  * File: Group_Project_Prototype_2_Client.java
- * License: GNU GPLv3 
+ * License: GNU GPLv3
  * Purpose: CSC 323 Group Project Prototype
  * Client GUI contains login panel, employee panel(s), and manager panel(s)
  * GUI utilizing the CardLayout in order to stack content panels
  * Uses TCP/IP to send and receive information to/from the server, including
  * SQL queries. Maintains connection until application run is terminated.
- * 
+ *
  */
 
 // Import declarations
@@ -38,7 +38,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
     final static String MANAGERPANEL_1 = "Card - Manager Panel 1";
     final static String EMPLOYEEPANEL_1 = "Card - Employee Panel 1";
     final static String EMPLOYEEPANEL_2 = "Card - Employee Panel 2";
-    
+
     public static void main(String[] args)
     {
         try
@@ -72,7 +72,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         {
             ex.printStackTrace();
         }
-        
+
         // Schedule a job for the event dispatch thread:
         // creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable()
@@ -83,7 +83,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             }
         });
     }
-    
+
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
@@ -94,24 +94,24 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         // Create and set up the window.
         JFrame frame = new JFrame("J Jacks Tire Repair"); // Our window's overall frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Set close oepration to end program
-        
+
         // Create and set up the content pane.
         Group_Project_Prototype_2_Client guiListener = new Group_Project_Prototype_2_Client();
         guiListener.addComponentToPane(frame.getContentPane());
-        
+
         // Display the window.
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-    
+
     public void addComponentToPane(Container panel)
     {
         LoginPanel cardLogin = new LoginPanel(); // Create our login panel
         ManagerPanel1 cardManager1 = new ManagerPanel1(); // Create our manager's first panel
         EmployeePanel1 cardEmployee1 = new EmployeePanel1(); // Create our employee's first panel
         EmployeePanel2 cardEmployee2 = new EmployeePanel2(); // Create our second employee panel
-        
+
         // Put the JComboBox in a JPanel to get a nicer look.
         JPanel comboBoxPane = new JPanel(); //use FlowLayout
         String comboBoxItems[] = { BUTTONPANEL, TEXTPANEL, LOGINPANEL, MANAGERPANEL_1, EMPLOYEEPANEL_1, EMPLOYEEPANEL_2 };
@@ -119,16 +119,16 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         cb.setEditable(false);
         cb.addItemListener(this);
         comboBoxPane.add(cb);
-        
+
         // Create the "cards".
         JPanel card1 = new JPanel();
         card1.add(new JButton("Button 1"));
         card1.add(new JButton("Button 2"));
         card1.add(new JButton("Button 3"));
-        
+
         JPanel card2 = new JPanel();
         card2.add(new JTextField("TextField", 20));
-        
+
         // Create the panel that contains the "cards".
         cards = new JPanel(new CardLayout());
         cards.add(card1, BUTTONPANEL);
@@ -137,15 +137,15 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         cards.add(cardManager1, MANAGERPANEL_1);
         cards.add(cardEmployee1, EMPLOYEEPANEL_1);
         cards.add(cardEmployee2, EMPLOYEEPANEL_2);
-        
+
         panel.add(comboBoxPane, BorderLayout.PAGE_START);
         panel.add(cards, BorderLayout.CENTER);
     }
-    
+
     /**
-     * Part of the ItemListener implementation, 
+     * Part of the ItemListener implementation,
      * contains functionality to process event actions and show new panel
-     * 
+     *
      * @param evt Item Event which trigger this event handler
      */
     @Override
@@ -154,10 +154,10 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         CardLayout cl = (CardLayout)(cards.getLayout()); // Get and cast our CardLayout
         cl.show(cards, (String)evt.getItem()); // Show the panel associated with the event's item String
     }
-    
+
     /**
      * Shows a new panel in the main GUI frame using the argument String
-     * 
+     *
      * @param panelIdentifier Panel identifier String
      */
     public void switchToPanel(String panelIdentifier)
@@ -165,11 +165,22 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         CardLayout cl = (CardLayout)(cards.getLayout()); // Get and cast our CardLayout
         cl.show(cards, panelIdentifier); // Show the panel associated with the argument String
     }
-    
+
+    /* *
+     * Adds 6.75% for tax.
+     * $10 mounting fee if < 4 tires.
+     * Rims are always mounted free
+     * Give employee 10% commission (before tax) if >= 4 tires AND >= 4 rims
+     */
+    public void calculateSale()
+    {
+        float total = 0;
+    }
+
     /**
      * Our event listener for all button events
      * Performs appropriate action based on origin event's command string
-     * 
+     *
      */
     class ButtonListener implements ActionListener
     {
@@ -179,8 +190,8 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             String commandText = e.getActionCommand(); // Get action command text
 
             System.out.println("Command Text: " + commandText);
-            
-            if (commandText.equalsIgnoreCase("login")) // Check for login button 
+
+            if (commandText.equalsIgnoreCase("login")) // Check for login button
             {
                 // TODO:
                 // Add code to create instance of socket object,
@@ -189,7 +200,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
                 //
                 // Display correct panel based on login results
                 //
-                
+
                 switchToPanel(MANAGERPANEL_1); // Switch to first manager panel
             }
             else if (commandText.equalsIgnoreCase("quit")) // Check for quit button
@@ -204,9 +215,13 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             {
                 switchToPanel(EMPLOYEEPANEL_1); // Switch back to first employee panel
             }
+            else if (commandText.equalsIgnoreCase("submit")) // Check for submit button in employee sales panel
+            {
+                calculateSale();
+            }
         }
     }
-    
+
     class ClickListener implements MouseListener
     {
 
@@ -222,7 +237,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
 
         @Override
         public void mouseExited(MouseEvent me) { } // </editor-fold>
-        
+
         @Override
         public void mouseClicked(MouseEvent me)
         {
@@ -239,7 +254,8 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             }
         }
     }
-    
+
+
     /**
      * This class acts as the menu when the employee table is right-clicked
      */
@@ -247,13 +263,13 @@ public class Group_Project_Prototype_2_Client implements ItemListener
     {
         private JMenuItem itmAddEmployee;
         private JMenuItem itmRemoveEmployee;
-        
+
         public PopUpTableMenu()
         {
             // Create our menu component objects
             itmAddEmployee = new JMenuItem("Add New Employee");
             itmRemoveEmployee = new JMenuItem("Remove Employee");
-            
+
             // Add our component objects to the menu
             this.add(itmAddEmployee);
             this.add(itmRemoveEmployee);
@@ -278,14 +294,14 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             // Set login panel component layout
             this.setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
-            
+
             // Create and customize our components for this panel
             lblUsername = new JLabel("Username: ");
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 0;
             c.gridy = 0;
             this.add(lblUsername, c); // Add our component to the panel
-            
+
             txtUsername = new JTextField();
             c.fill = GridBagConstraints.HORIZONTAL;
             c.weightx = 0.5;
@@ -293,13 +309,13 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             c.gridx = 1;
             c.gridy = 0;
             this.add(txtUsername, c); // Add our component to the panel
-            
+
             lblPassword = new JLabel("Password: ");
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 0;
             c.gridy = 1;
             this.add(lblPassword, c); // Add our component to the panel
-            
+
             pwdPassword = new JPasswordField();
             c.fill = GridBagConstraints.HORIZONTAL;
             c.weightx = 0.5;
@@ -313,13 +329,13 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             c.gridx = 0;
             c.gridy = 2;
             this.add(btnLogin, c); // Add our component to the panel
-            
+
             btnQuit = new JButton("Quit");
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 1;
             c.gridy = 2;
             this.add(btnLogin, c); // Add our component to the panel
-            
+
             // Create event listener/handler objects
             ButtonListener btnListener = new ButtonListener();
             // Register event listeneres/handlers
@@ -333,25 +349,25 @@ public class Group_Project_Prototype_2_Client implements ItemListener
     {
         // Declare our component objects which will be on this panel
         private JTable tblEmployeeInfo;
-        
+
         private JButton btnQuit;
 
         public ManagerPanel1()
         {
             // Create our click listener object for our table
             ClickListener clickListener = new ClickListener();
-            
+
             // Create and customize our components for this panel
             tblEmployeeInfo = new JTable();
             tblEmployeeInfo.setName("tblEmployeeInfo");
-            
+
             btnQuit = new JButton("Quit");
-            
+
             // Create event listener/handler objects
             ButtonListener btnListener = new ButtonListener();
             // Register event listeneres/handlers
             btnQuit.addActionListener(btnListener);
-            
+
             tblEmployeeInfo.addMouseListener(clickListener);
 
             // Set manager panel #1 component layout
@@ -368,12 +384,12 @@ public class Group_Project_Prototype_2_Client implements ItemListener
     {
         // Declare our component objects which will be on this panel
         private JLabel lblClockStatus;
-        
+
         private JButton btnClockIn;
         private JButton btnClockOut;
         private JButton btnSale;
         private JButton btnLogOut;
-        
+
         private String clockStatus;
 
         public EmployeePanel1()
@@ -381,9 +397,9 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             // Set first employee panel component layout
             this.setLayout(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
-            
+
             clockStatus = "Clocked Out"; // Set initial clock status
-            
+
             // Create and customize our components for this panel
             lblClockStatus = new JLabel("Current clock status is " + clockStatus);
             c.fill = GridBagConstraints.HORIZONTAL;
@@ -392,27 +408,27 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             c.gridx = 0;
             c.gridy = 0;
             this.add(lblClockStatus, c); // Add our component to the panel
-            
+
             btnClockIn = new JButton("Clock In");
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridwidth = 1;
             c.gridx = 0;
             c.gridy = 1;
             this.add(btnClockIn, c); // Add our component to the panel
-            
+
             btnClockOut = new JButton("Clock Out");
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 1;
             c.gridy = 1;
             this.add(btnClockOut, c); // Add our component to the panel
-            
+
             btnSale = new JButton("Sale");
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 0;
             c.gridy = 2;
             btnSale.setActionCommand("saleScreen");
             this.add(btnSale, c); // Add our component to the panel
-            
+
             btnLogOut = new JButton("Log Out");
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridx = 1;
@@ -428,7 +444,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             btnSale.addActionListener(btnListener);
         }
     } // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Employee Panel 2">
     class EmployeePanel2 extends JPanel
     {
@@ -441,11 +457,11 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         private JLabel lblRimModelNumber;
         private JLabel lblNumberRimsSold;
         private JLabel lblRimUnitPrice;
-        
+
         //private JTextField txtNameOfTire;
         private JComboBox cbxNameOfTire;
         private JComboBox cbxNameOfRim;
-        
+
         private JTextField txtTireModelNumber;
         private JTextField txtNumberTiresSold;
         private JTextField txtTireUnitPrice;
@@ -453,7 +469,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         private JTextField txtRimModelNumber;
         private JTextField txtNumberRimsSold;
         private JTextField txtRimUnitPrice;
-        
+
         private JButton btnSubmit;
         private JButton btnBack;
 
@@ -473,7 +489,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             cbxNameOfTire = new JComboBox(namesOfTires);
             String[] namesOfRims = { "Standard", "Spinning", "Metal" };
             cbxNameOfRim = new JComboBox(namesOfRims);
-            
+
             txtTireModelNumber = new JTextField();
             txtNumberTiresSold = new JTextField();
             txtTireUnitPrice = new JTextField();
@@ -481,7 +497,8 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             txtNumberRimsSold = new JTextField();
             txtRimUnitPrice = new JTextField();
 
-            btnSubmit =  new JButton("Submit");
+            btnSubmit = new JButton("Submit");
+            btnSubmit.setActionCommand("submit");
             btnBack = new JButton("Back To Clock");
             btnBack.setActionCommand("backToClock");
 
@@ -490,7 +507,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             // Register event listeneres/handlers
             btnSubmit.addActionListener(btnListener);
             btnBack.addActionListener(btnListener);
-            
+
             // Set employee panel #1 component layout
             this.setLayout(new GridLayout(9, 2));
 
@@ -511,13 +528,15 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             this.add(txtNumberRimsSold);
             this.add(lblRimUnitPrice);
             this.add(txtRimUnitPrice);
-            
+
             this.add(btnBack);
             this.add(btnSubmit);
-            
+
         }
+
+
     } // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Client Network Class">
     class ClientNetworkProgram
     {
@@ -526,7 +545,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         private int port;
         private String command;
         //private Socket cSocket;
-        
+
         public ClientNetworkProgram(String hostName, int portNumber)
         {
             this.state = "WAITING"; // Set initial client state to waiting
@@ -535,7 +554,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             this.command = null; // Set internal command to null
             //this.cSocket = null; // Set our socket object attribute to null
         }
-        
+
         public void connect()
         {
 //            try
@@ -548,7 +567,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             (
                 Socket cSocket = new Socket(this.host, this.port);
                 PrintWriter out = new PrintWriter(cSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));                
+                BufferedReader in = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
             )
             {
                 String fromServer;
@@ -564,7 +583,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
                         System.out.println("TCP/IP Session is ending.");
                         break;
                     }
-                    
+
                     if (command != null)
                     {
                         System.out.println("Client: " + command);
@@ -583,18 +602,18 @@ public class Group_Project_Prototype_2_Client implements ItemListener
                 System.exit(1);
             }
         }
-        
+
         public void sendMessage(String msg)
         {
             this.command = msg;
         }
-        
+
 //        public String sendMessage(String msg)
 //        {
 //            String response = ""; // Will hold the response from the server
 //            return response; // Return the server's response
 //        }
-        
+
     } // </editor-fold>
 }
 
