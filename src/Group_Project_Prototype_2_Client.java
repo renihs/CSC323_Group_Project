@@ -167,14 +167,51 @@ public class Group_Project_Prototype_2_Client implements ItemListener
     }
 
     /* *
+     * Calculates sale and displays total to user.
+     * Gives employee commission if appropriate.
+     *
      * Adds 6.75% for tax.
      * $10 mounting fee if < 4 tires.
      * Rims are always mounted free
      * Give employee 10% commission (before tax) if >= 4 tires AND >= 4 rims
      */
-    public void calculateSale()
+    public void calculateSale(EmployeePanel2 salesPanel)
     {
-        float total = 0;
+        final double tireUnitPrice = salesPanel.getTireUnitPrice();
+        final int numberTiresSold = salesPanel.getNumberTiresSold();
+        final double rimUnitPrice = salesPanel.getRimUnitPrice();
+        final int numberRimsSold = salesPanel.getNumberRimsSold();
+
+        double total = 0;
+
+        // Add cost of tires and rims
+        total = tireUnitPrice * numberTiresSold +
+                rimUnitPrice * numberRimsSold;
+
+        // Add mounting fee if < 4 tires
+        if(numberTiresSold < 4)
+        {
+            final int mountingFee = 10;
+            System.out.println("Mounting Fee");
+            total += mountingFee;
+        }
+
+        // Give employee commission if >= 4 tires AND >= 4 rims
+        if(numberTiresSold >= 4 && numberRimsSold >= 4)
+        {
+            final double commissionRate = 0.1;
+            double commission = total * commissionRate;
+            // TODO: add employee commission to his pay in database
+            System.out.print("Commission: $");
+            System.out.printf("%.2f\n", commission);
+        }
+
+        // Add tax
+        final double taxRate = 0.0675;
+        total *= (1 + taxRate);
+
+        System.out.print("Total: $");
+        System.out.printf("%.2f\n\n", total);
     }
 
     /**
@@ -220,8 +257,15 @@ public class Group_Project_Prototype_2_Client implements ItemListener
                 // Get sale JPanel, then grab and validate user-entered values
                 // Perform computations and, if appropriate, send an update
                 // to the server to add the commission to the logged in employee
-                JPanel salePanel = null;
-                calculateSale();
+
+                EmployeePanel2 salesPanel = null;
+                // finds active panel
+                for (Component comp : cards.getComponents()) {
+                    if (comp.isVisible() == true) {
+                        salesPanel = (EmployeePanel2) comp;
+                    }
+                }
+                calculateSale(salesPanel);
             }
         }
     }
@@ -536,7 +580,23 @@ public class Group_Project_Prototype_2_Client implements ItemListener
 
             this.add(btnBack);
             this.add(btnSubmit);
+        }
 
+        // Getters
+        public double getTireUnitPrice(){
+            return Double.parseDouble(this.txtTireUnitPrice.getText());
+        }
+
+        public int getNumberTiresSold(){
+            return Integer.parseInt(this.txtNumberTiresSold.getText());
+        }
+
+        public double getRimUnitPrice(){
+            return Double.parseDouble(this.txtRimUnitPrice.getText());
+        }
+
+        public int getNumberRimsSold(){
+            return Integer.parseInt(this.txtNumberRimsSold.getText());
         }
 
 
