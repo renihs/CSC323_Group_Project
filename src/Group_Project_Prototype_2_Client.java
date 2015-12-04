@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import javax.swing.*;
+import java.text.*;
 
 public class Group_Project_Prototype_2_Client implements ItemListener
 {
@@ -197,10 +198,11 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         }
 
         // Give employee commission if >= 4 tires AND >= 4 rims
+        final double commissionRate = 0.1;
+        double commission = 0;
         if(numberTiresSold >= 4 && numberRimsSold >= 4)
         {
-            final double commissionRate = 0.1;
-            double commission = total * commissionRate;
+            commission = total * commissionRate;
             // TODO: add employee commission to his pay in database
             System.out.print("Commission: $");
             System.out.printf("%.2f\n", commission);
@@ -209,6 +211,9 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         // Add tax
         final double taxRate = 0.0675;
         total *= (1 + taxRate);
+
+        salesPanel.setTotal(total);
+        salesPanel.setCommission(commission);
 
         System.out.print("Total: $");
         System.out.printf("%.2f\n\n", total);
@@ -259,7 +264,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
                 // to the server to add the commission to the logged in employee
 
                 EmployeePanel2 salesPanel = null;
-                // finds active panel
+                // finds active panel (should be sales panel)
                 for (Component comp : cards.getComponents()) {
                     if (comp.isVisible() == true) {
                         salesPanel = (EmployeePanel2) comp;
@@ -505,6 +510,8 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         private JLabel lblRimModelNumber;
         private JLabel lblNumberRimsSold;
         private JLabel lblRimUnitPrice;
+        private JLabel lblTotal;
+        private JLabel lblCommission;
 
         //private JTextField txtNameOfTire;
         private JComboBox cbxNameOfTire;
@@ -517,6 +524,8 @@ public class Group_Project_Prototype_2_Client implements ItemListener
         private JTextField txtRimModelNumber;
         private JTextField txtNumberRimsSold;
         private JTextField txtRimUnitPrice;
+        private JFormattedTextField txtTotal;
+        private JFormattedTextField txtCommission;
 
         private JButton btnSubmit;
         private JButton btnBack;
@@ -532,6 +541,8 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             lblRimModelNumber = new JLabel("Rim Model Number: ");
             lblNumberRimsSold = new JLabel("Number of Rims Sold: ");
             lblRimUnitPrice = new JLabel("Rim Unit Price: ");
+            lblTotal = new JLabel("Total: ");
+            lblCommission = new JLabel("Commission: ");
 
             String[] namesOfTires = { "Standard", "Racing", "Off-Road" };
             cbxNameOfTire = new JComboBox(namesOfTires);
@@ -544,6 +555,12 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             txtRimModelNumber = new JTextField();
             txtNumberRimsSold = new JTextField();
             txtRimUnitPrice = new JTextField();
+
+            txtTotal = new JFormattedTextField(NumberFormat.getCurrencyInstance());
+            txtCommission = new JFormattedTextField(NumberFormat.getCurrencyInstance());
+
+            txtTotal.setEditable(false);
+            txtCommission.setEditable(false);
 
             btnSubmit = new JButton("Submit");
             btnSubmit.setActionCommand("submitSale");
@@ -558,7 +575,7 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             btnBack.addActionListener(btnListener);
 
             // Set employee panel #1 component layout
-            this.setLayout(new GridLayout(9, 2));
+            this.setLayout(new GridLayout(11, 2));
 
             // Add our components to the panel
             this.add(lblNameOfTire);
@@ -577,26 +594,45 @@ public class Group_Project_Prototype_2_Client implements ItemListener
             this.add(txtNumberRimsSold);
             this.add(lblRimUnitPrice);
             this.add(txtRimUnitPrice);
+            this.add(lblTotal);
+            this.add(txtTotal);
+            this.add(lblCommission);
+            this.add(txtCommission);
 
             this.add(btnBack);
             this.add(btnSubmit);
         }
 
         // Getters
-        public double getTireUnitPrice(){
+        public double getTireUnitPrice()
+        {
             return Double.parseDouble(this.txtTireUnitPrice.getText());
         }
 
-        public int getNumberTiresSold(){
+        public int getNumberTiresSold()
+        {
             return Integer.parseInt(this.txtNumberTiresSold.getText());
         }
 
-        public double getRimUnitPrice(){
+        public double getRimUnitPrice()
+        {
             return Double.parseDouble(this.txtRimUnitPrice.getText());
         }
 
-        public int getNumberRimsSold(){
+        public int getNumberRimsSold()
+        {
             return Integer.parseInt(this.txtNumberRimsSold.getText());
+        }
+
+        // Setters
+        public void setTotal(double total)
+        {
+            this.txtTotal.setValue(total);
+        }
+
+        public void setCommission(double commission)
+        {
+            this.txtCommission.setValue(commission);
         }
 
 
